@@ -10,6 +10,7 @@ const {
   findTalkerById,
   insertTalker,
   editTalker,
+  deleteTalker,
 } = require('../utils/readAndWriteFile');
 
 const talkerRouter = express.Router();
@@ -34,6 +35,17 @@ talkerRouter.get('/:id', async (req, res) => {
       });
     }
     return res.status(200).json(talker);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+talkerRouter.delete('/:id', validateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const talker = await deleteTalker(+id);
+    return res.status(204).json(talker);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

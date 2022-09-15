@@ -39,9 +39,17 @@ const editTalker = async (talkerInfo, id) => {
   return updateTalker;
 };
 
+const deleteTalker = async (ID) => {
+  const contentFile = await readTalkerFile();
+  const filteredTalker = contentFile.filter(({ id }) => id !== ID);
+  await fs.writeFile(join(__dirname, talker), JSON.stringify(filteredTalker));
+  return null;
+};
+
 module.exports = {
   readTalkerFile,
   findTalkerById,
   insertTalker,
   editTalker,
+  deleteTalker,
 };
