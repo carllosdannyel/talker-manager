@@ -14,7 +14,15 @@ const findTalkerById = async (ID) => {
   return response;
 };
 
+const insertTalker = async (newTalker) => {
+  const contentFile = await readTalkerFile();
+  contentFile.push(newTalker);
+  const response = await fs.writeFile(join(__dirname, talker), JSON.stringify(contentFile));
+  return response;
+};
+
 module.exports = {
   readTalkerFile,
   findTalkerById,
+  insertTalker,
 };

@@ -1,19 +1,26 @@
 const express = require('express');
-const { readTalkerFile, findTalkerById } = require('../utils/readAndWriteFile');
+const { readTalkerFile, findTalkerById, insertTalker } = require('../utils/readAndWriteFile');
+const validateToken = require('../middlewares/validateToken');
+const validateName = require('../middlewares/validateName');
+const validadeAge = require('../middlewares/validateAge');
+const validadeTalk = require('../middlewares/validateTalk');
+const validateWatchedAt = require('../middlewares/validateWatchedAt');
+const validadeRate = require('../middlewares/validadeRate');
 
 const talkerRouter = express.Router();
 
 talkerRouter.get('/', async (_req, res) => {
   try {
     const talkers = await readTalkerFile();
-    res.status(200).json(talkers);
+    return res.status(200).json(talkers);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 });
 
 talkerRouter.get('/:id', async (req, res) => {
   const { id } = req.params;
+  
   try {
     const talker = await findTalkerById(+id);
     if (!talker) {
@@ -23,7 +30,32 @@ talkerRouter.get('/:id', async (req, res) => {
     }
     return res.status(200).json(talker);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+talkerRouter.use(
+  validateToken,
+  validateName,
+  validadeAge,
+  validadeTalk,
+  validateWatchedAt,
+  validadeRate,
+);
+
+talkerRouter.post('/', async (req, res) => {
+  const arrayTalkers = await readTalkerFile();
+  const talker = req.body;
+  const newTalker = {
+    id: arrayTalkers[arrayTalkers.length - 1].id + 1,
+    ...talker,
+  };
+
+  try {
+    await insertTalker(newTalker);
+    return res.status(201).json(newTalker);
+  } catch (error) {
+    return res.status(500).json({ menssage: error.message });
   }
 });
 
