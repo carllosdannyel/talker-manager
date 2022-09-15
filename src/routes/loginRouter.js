@@ -1,14 +1,16 @@
 const express = require('express');
 const generateToken = require('../utils/generateToken');
+const validateEmail = require('../middlewares/validateEmail');
+const validatePassword = require('../middlewares/validatePassword');
 
 const loginRouter = express.Router();
 
-loginRouter.post('/', (_req, res) => {
+loginRouter.post('/', validateEmail, validatePassword, (req, res) => {
   try {
     const token = generateToken(16);
-    res.status(200).json({ token });
+    return res.status(200).json({ token });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ menssage: error.message });
   }
 });
 
