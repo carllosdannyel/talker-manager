@@ -46,10 +46,20 @@ const deleteTalker = async (ID) => {
   return null;
 };
 
+const searchTalker = async (q) => {
+  const contentFile = await readTalkerFile();
+  const filteredTalker = contentFile.filter(({ name }) => name.includes(q));
+  if (!q || q === '') {
+    return contentFile;
+  }
+  return filteredTalker;
+};
+
 module.exports = {
   readTalkerFile,
   findTalkerById,
   insertTalker,
   editTalker,
   deleteTalker,
+  searchTalker,
 };

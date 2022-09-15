@@ -11,6 +11,7 @@ const {
   insertTalker,
   editTalker,
   deleteTalker,
+  searchTalker,
 } = require('../utils/readAndWriteFile');
 
 const talkerRouter = express.Router();
@@ -19,6 +20,16 @@ talkerRouter.get('/', async (_req, res) => {
   try {
     const talkers = await readTalkerFile();
     return res.status(200).json(talkers);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+talkerRouter.get('/search', validateToken, async (req, res) => {
+  const { q } = req.query;
+  try {
+    const search = await searchTalker(q);
+    return res.status(200).json(search);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
