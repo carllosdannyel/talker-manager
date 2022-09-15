@@ -7,7 +7,7 @@ const validadeTalk = (req, res, next) => {
     });
   }
 
-  return next();
+  next();
 };
 
 module.exports = validadeTalk;

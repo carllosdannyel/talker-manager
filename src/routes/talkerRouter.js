@@ -1,11 +1,16 @@
 const express = require('express');
-const { readTalkerFile, findTalkerById, insertTalker } = require('../utils/readAndWriteFile');
 const validateToken = require('../middlewares/validateToken');
 const validateName = require('../middlewares/validateName');
 const validadeAge = require('../middlewares/validateAge');
 const validadeTalk = require('../middlewares/validateTalk');
 const validateWatchedAt = require('../middlewares/validateWatchedAt');
 const validadeRate = require('../middlewares/validadeRate');
+const {
+  readTalkerFile,
+  findTalkerById,
+  insertTalker,
+  editTalker,
+} = require('../utils/readAndWriteFile');
 
 const talkerRouter = express.Router();
 
@@ -54,6 +59,18 @@ talkerRouter.post('/', async (req, res) => {
   try {
     await insertTalker(newTalker);
     return res.status(201).json(newTalker);
+  } catch (error) {
+    return res.status(500).json({ menssage: error.message });
+  }
+});
+
+talkerRouter.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const talker = req.body;
+  
+  try {
+    const newTalker = await editTalker(talker, +id);
+    return res.status(200).json(newTalker);
   } catch (error) {
     return res.status(500).json({ menssage: error.message });
   }
